@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Allenamenti Ascolto e Accettazione</title>
+  <style>
+    :root{
+      --bg:#0f172a;       /* slate-900 */
+      --panel:#111827;    /* gray-900 */
+      --muted:#94a3b8;    /* slate-400 */
+      --text:#e5e7eb;     /* gray-200 */
+      --accent:#22c55e;   /* green-500 */
+      --accent2:#3b82f6;  /* blue-500 */
+      --danger:#ef4444;   /* red-500 */
+      --card:#0b1224;     /* darker */
+      --border:#1f2937;   /* gray-800 */
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b1224,#0f172a);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;background:rgba(11,18,36,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .wrap{max-width:1000px;margin:0 auto;padding:18px}
+    h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.3px}
+    .subtitle{color:var(--muted);font-size:13px}
+    main{display:grid;grid-template-columns:1fr;gap:16px;padding:16px}
+    @media(min-width:960px){main{grid-template-columns:380px 1fr}}
+    .card{background:linear-gradient(180deg,#0f172a,#0b1224);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+    .card h2{margin:0 0 8px 0;font-size:16px}
+    .card .inner{padding:16px}
+    label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#0a1221;color:var(--text)}
+    textarea{min-height:76px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:12px;padding:10px 12px;background:var(--panel);color:var(--text);cursor:pointer;border:1px solid var(--border)}
+    .btn:hover{filter:brightness(1.08)}
+    .btn.primary{background:linear-gradient(180deg,#1b9f54,#168a49);border-color:#12723c}
+    .btn.blue{background:linear-gradient(180deg,#3b82f6,#2563eb);border-color:#1d4ed8}
+    .btn.ghost{background:transparent}
+    .chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:#0a1221;color:var(--muted);font-size:12px}
+    .stat{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .stat .kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px}
+    .kpi .v{font-size:20px;font-weight:700}
+    .kpi .l{font-size:12px;color:var(--muted)}
+    .list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px}
+    .item h4{margin:0 0 6px 0;font-size:14px}
+    .muted{color:var(--muted);font-size:12px}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .tag{font-size:11px;border:1px solid var(--border);padding:4px 8px;border-radius:999px}
+    .ok{color:#22c55e}
+    .ko{color:#f87171}
+    .row-actions{display:flex;gap:6px;margin-top:8px}
+    .link{color:var(--accent2);text-decoration:none}
+    .hr{height:1px;background:var(--border);margin:12px 0}
+    footer{padding:20px;color:var(--muted);text-align:center}
+    .progress{height:10px;background:#0a1221;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;background:linear-gradient(90deg,#16a34a,#22c55e);width:0}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Allenamenti Ascolto e Accettazione</h1>
+      <div class="subtitle">Registra ogni volta che 1) resti in ascolto senza prendere il centro; 2) accetti indicazioni/decisioni senza obiettare. Obiettivo: 30 giorni.</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Nuova occorrenza -->
+    <section class="card">
+      <div class="inner">
+        <h2>Nuova occorrenza</h2>
+        <div class="row">
+          <div>
+            <label>Data</label>
+            <input id="date" type="date" />
+          </div>
+          <div>
+            <label>Categoria</label>
+            <select id="category">
+              <option value="Ascolto">Ascolto in silenzio</option>
+              <option value="Accettazione">Accettazione senza obiettare</option>
+            </select>
+          </div>
+        </div>
+        <label>Evento / situazione</label>
+        <textarea id="event" placeholder="Esempio: riunione famiglia – ho ascoltato senza intervenire…"></textarea>
+        <label>Hai rispettato l'impegno?</label>
+        <div class="row">
+          <button class="btn" id="setYes" type="button">✔️ Sì</button>
+          <button class="btn" id="setNo" type="button">❌ No</button>
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn primary" id="addBtn">Aggiungi occorrenza</button>
+          <span class="chip" id="commitState">Esito: <strong id="commitLabel">–</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Riepilogo -->
+    <section class="card">
+      <div class="inner">
+        <h2>Riepilogo (ultimi 30 giorni)</h2>
+        <div class="stat">
+          <div class="kpi"><div class="v" id="kpiTotal">0</div><div class="l">Occorrenze totali</div></div>
+          <div class="kpi"><div class="v" id="kpiSuccess">0 (0%)</div><div class="l">Riuscite</div></div>
+          <div class="kpi"><div class="v" id="kpiA">0</div><div class="l">Ascolto – riuscite</div></div>
+          <div class="kpi"><div class="v" id="kpiB">0</div><div class="l">Accettazione – riuscite</div></div>
+        </div>
+        <div class="hr"></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="min-width:120px">Progresso 30 giorni</div>
+          <div class="progress" style="flex:1"><div id="progressBar"></div></div>
+          <div class="chip" id="progressLabel">0/30</div>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <button class="btn blue" id="exportJson">Esporta JSON</button>
+          <button class="btn blue" id="exportCsv">Esporta CSV</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Elenco -->
+    <section class="card" style="grid-column:1/-1">
+      <div class="inner">
+        <h2>Registro</h2>
+        <div class="row" style="align-items:end">
+          <div>
+            <label>Filtra per data (da)</label>
+            <input id="fromDate" type="date" />
+          </div>
+          <div>
+            <label>Filtra per data (a)</label>
+            <input id="toDate" type="date" />
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn" id="applyFilter">Applica filtro</button>
+          <button class="btn ghost" id="clearFilter">Pulisci</button>
+        </div>
+        <div class="list" id="list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>💡 I dati sono salvati solo sul tuo dispositivo (LocalStorage). Per condividere con altri, usa l'esportazione.</div>
+  </footer>
+
+  <script>
+    // ---------- Utilities ----------
+    const $ = (id)=>document.getElementById(id);
+    const todayStr = ()=>{
+      const d = new Date();
+      // normalizza alla timezone locale dell'utente
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const da = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${da}`;
+    };
+    const uid = ()=> Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+    function loadEntries(){
+      try{ return JSON.parse(localStorage.getItem('aaa_entries')||'[]'); }
+      catch(e){return []}
+    }
+    function saveEntries(arr){ localStorage.setItem('aaa_entries', JSON.stringify(arr)); }
+
+    function startDate(){
+      // data d'inizio sfida 30 giorni; di default la prima esecuzione è oggi
+      let s = localStorage.getItem('aaa_start');
+      if(!s){ s = todayStr(); localStorage.setItem('aaa_start', s); }
+      return s;
+    }
+
+    function inRange(dateStr, from, to){
+      if(from && dateStr < from) return false;
+      if(to && dateStr > to) return false;
+      return true;
+    }
+
+    // ---------- State ----------
+    let entries = loadEntries();
+    let commit = null; // true/false/null
+
+    // ---------- Init form ----------
+    function initForm(){
+      $('date').value = todayStr();
+      $('setYes').onclick = ()=>{ commit = true; $('commitLabel').textContent = 'Sì'; $('commitState').style.borderColor = '#12723c'; };
+      $('setNo').onclick  = ()=>{ commit = false; $('commitLabel').textContent = 'No'; $('commitState').style.borderColor = '#7f1d1d'; };
+      $('addBtn').onclick = addEntry;
+
+      $('exportJson').onclick = exportJson;
+      $('exportCsv').onclick = exportCsv;
+
+      $('applyFilter').onclick = renderList;
+      $('clearFilter').onclick = ()=>{ $('fromDate').value=''; $('toDate').value=''; renderList(); };
+    }
+
+    // ---------- Add entry ----------
+    function addEntry(){
+      const date = $('date').value || todayStr();
+      const category = $('category').value;
+      const event = $('event').value.trim();
+      if(!event){ alert('Inserisci una descrizione dell\'evento.'); return; }
+      if(commit===null){ alert('Indica se hai rispettato l\'impegno (Sì/No).'); return; }
+      const rec = { id: uid(), date, category, event, success: !!commit, ts: Date.now() };
+      entries.unshift(rec);
+      saveEntries(entries);
+      $('event').value = '';
+      commit = null; $('commitLabel').textContent = '–'; $('commitState').style.borderColor = 'var(--border)';
+      renderAll();
+    }
+
+    // ---------- Delete ----------
+    function deleteEntry(id){
+      if(!confirm('Eliminare questa occorrenza?')) return;
+      entries = entries.filter(e=>e.id!==id);
+      saveEntries(entries);
+      renderAll();
+    }
+
+    // ---------- Export ----------
+    function download(filename, text){
+      const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+    function exportJson(){
+      download('allenamenti.json', JSON.stringify(entries, null, 2));
+    }
+    function exportCsv(){
+      const header = ['id','data','categoria','evento','riuscito','timestamp'];
+      const rows = entries.map(e=>[
+        e.id,
+        e.date,
+        e.category,
+        '"'+e.event.replaceAll('"','""')+'"',
+        e.success?'true':'false',
+        new Date(e.ts).toISOString()
+      ].join(','));
+      download('allenamenti.csv', header.join(',')+'\n'+rows.join('\n'));
+    }
+
+    // ---------- Summary ----------
+    function renderSummary(){
+      const now = new Date();
+      const last30 = new Date(now.getFullYear(), now.getMonth(), now.getDate()-29);
+      const from = last30.toISOString().slice(0,10);
+
+      const recent = entries.filter(e=>e.date>=from);
+      const total = recent.length;
+      const succ = recent.filter(e=>e.success).length;
+      const rate = total? Math.round(succ*100/total) : 0;
+
+      const aSucc = recent.filter(e=>e.category==='Ascolto' && e.success).length;
+      const bSucc = recent.filter(e=>e.category==='Accettazione' && e.success).length;
+
+      $('kpiTotal').textContent = String(total);
+      $('kpiSuccess').textContent = `${succ} (${rate}%)`;
+      $('kpiA').textContent = String(aSucc);
+      $('kpiB').textContent = String(bSucc);
+
+      // progress 30 giorni dall'inizio sfida
+      const start = startDate();
+      const days = Math.min(30, Math.max(0, Math.floor((Date.parse(now) - Date.parse(start)) / 86400000)+1));
+      $('progressBar').style.width = `${Math.round(days/30*100)}%`;
+      $('progressLabel').textContent = `${days}/30`;
+    }
+
+    // ---------- List ----------
+    function renderList(){
+      const list = $('list');
+      list.innerHTML = '';
+      const from = $('fromDate').value || null;
+      const to = $('toDate').value || null;
+
+      const filtered = entries.filter(e=>inRange(e.date, from, to));
+
+      if(filtered.length===0){
+        const div = document.createElement('div');
+        div.className='muted';
+        div.textContent = 'Nessuna occorrenza registrata.';
+        list.appendChild(div);
+        return;
+      }
+
+      // Group by date
+      const byDate = {};
+      for(const e of filtered){
+        if(!byDate[e.date]) byDate[e.date]=[];
+        byDate[e.date].push(e);
+      }
+      const dates = Object.keys(byDate).sort((a,b)=> b.localeCompare(a));
+
+      for(const d of dates){
+        const group = document.createElement('div');
+        group.className='item';
+        const title = document.createElement('h4');
+        const pretty = d.split('-').reverse().join('/');
+        title.textContent = `Giorno ${pretty}`;
+        group.appendChild(title);
+
+        for(const e of byDate[d]){
+          const row = document.createElement('div');
+          row.className='item';
+          row.style.background='transparent';
+          row.style.border='1px dashed var(--border)';
+
+          row.innerHTML = `
+            <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+              <div>
+                <div class="tags">
+                  <span class="tag">${e.category}</span>
+                  <span class="tag ${e.success?'ok':'ko'}">${e.success?'Riuscito':'Non riuscito'}</span>
+                </div>
+                <div class="muted" style="margin-top:6px;white-space:pre-wrap">${escapeHtml(e.event)}</div>
+              </div>
+              <div class="row-actions">
+                <button class="btn" title="Elimina" onclick="deleteEntry('${e.id}')">🗑️</button>
+              </div>
+            </div>`;
+
+          group.appendChild(row);
+        }
+        list.appendChild(group);
+      }
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+    }
+
+    function renderAll(){
+      renderSummary();
+      renderList();
+    }
+
+    // ---------- Boot ----------
+    initForm();
+    renderAll();
+  </script>
+</body>
+</html>
